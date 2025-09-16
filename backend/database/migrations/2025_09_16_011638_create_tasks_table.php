@@ -14,13 +14,12 @@ return new class extends Migration
         Schema::create('tasks', function (Blueprint $table) {
             $table->id();
             $table->string('description');
-            $table->enum('status', ['todo', 'done'])->default('todo');
-            $table->date('due_date');         
+            $table->boolean('completed')->default(false);
+            $table->date('due_date'); // not nullable
             $table->enum('priority', ['low','medium','high'])->default('medium');
-            $table->timestamps(); 
+            $table->timestamps();
         });
     }
-
 
     /**
      * Reverse the migrations.
