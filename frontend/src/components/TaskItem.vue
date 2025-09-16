@@ -12,7 +12,7 @@ export default defineComponent({
       required: true
     }
   },
-  emits: ['edit-task', 'delete-task', 'toggle-task']
+  emits: ['edit-task', 'delete-task', 'toggle-task', 'automate-task']
 ,
   setup(props, { emit }) {
     const showEditModal = ref(false);
@@ -21,6 +21,10 @@ export default defineComponent({
 
     const toggleComplete = () => {
        emit('toggle-task', { ...props.task, completed: !props.task.completed });
+    };
+
+    const automateTask = () => {
+       emit('automate-task', { ...props.task});
     };
 
     const saveEdit = () => {
@@ -33,26 +37,11 @@ export default defineComponent({
       emit('delete-task', props.task.id);
     };
 
-    const triggerAutomation = async () => {
-      try {
-
-        const response = await api.post('/tasks/automation', {
-          taskId: props.task.id,
-          description: props.task.description
-        });
-
-        alert(response.data.message || 'Automation triggered!');
-      } catch (err) {
-        console.error('Automation failed', err);
-        alert('Failed to trigger automation');
-      }
-    };
-
     const formattedDescription = computed(() => {
       return props.task.description.replace(/(.{30})/g, '$1\n');
     });
 
-    return { toggleComplete, showEditModal, editedDescription, editedPriority, saveEdit, deleteTask, triggerAutomation,formattedDescription  };
+    return { toggleComplete, showEditModal, editedDescription, editedPriority, saveEdit, deleteTask, automateTask,formattedDescription  };
   }
 });
 </script>
@@ -61,7 +50,7 @@ export default defineComponent({
   <div class="flex items-center justify-between p-2 border-b">
     <div class="flex items-center gap-2">
       
-      <input class="task-item" type="checkbox" :checked="task.completed" @change="toggleComplete" />
+      <input class="task-item accent-pink-500" type="checkbox" :checked="task.completed" @change="toggleComplete" />
       
       <div class="priority-wrapper">
         <span class="priority-badge" :class="task.priority">
@@ -90,7 +79,7 @@ export default defineComponent({
         </button>
       </div>
 
-      <button @click="triggerAutomation" class="robot-btn">
+      <button @click="automateTask" class="robot-btn">
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" fill="white" class="w-5 h-5">
       <path fill-rule="evenodd" d="M14.615 1.595a.75.75 0 0 1 .359.852L12.982 9.75h7.268a.75.75 0 0 1 .548 1.262l-10.5 11.25a.75.75 0 0 1-1.272-.71l1.992-7.302H3.75a.75.75 0 0 1-.548-1.262l10.5-11.25a.75.75 0 0 1 .913-.143Z" clip-rule="evenodd" />
     </svg>

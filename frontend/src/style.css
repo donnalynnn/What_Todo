@@ -246,7 +246,12 @@ sidebar-img {
 }
 
 .task-item input[type="checkbox"] {
-  accent-color: #eda6b2; /* checkbox */
+  accent-color: #eda6b2; 
+}
+
+.task-item {
+  accent-color: #c2a1b2;
+  background: #a48888;
 }
 
 .task-item span {

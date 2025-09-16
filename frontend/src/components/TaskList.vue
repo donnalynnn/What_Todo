@@ -9,14 +9,15 @@ export default defineComponent({
   props: {
     tasks: { type: Array as () => Task[], required: true },
   },
-  emits: ['edit-task', 'delete-task', 'toggle-task'],
+  emits: ['edit-task', 'delete-task', 'toggle-task', 'automate-task'],
 
   setup(_, { emit }) {
     const forwardEdit = (task: Task) => emit('edit-task', task);
     const forwardDelete = (id: number) => emit('delete-task', id);
     const forwardToggle = (task: Task) => emit('toggle-task', task);
+    const forwardAutomate = (task: Task) => emit('automate-task',task);
 
-    return { forwardEdit, forwardDelete, forwardToggle };
+    return { forwardEdit, forwardDelete, forwardToggle, forwardAutomate};
   }
 });
 </script>
@@ -30,6 +31,7 @@ export default defineComponent({
       @edit-task="$emit('edit-task', $event)" 
       @delete-task="$emit('delete-task', $event)" 
       @toggle-task="$emit('toggle-task', $event)"
+      @automate-task="$emit('automate-task', $event)"
     />
   </div>
 </template>

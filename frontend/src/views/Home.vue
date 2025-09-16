@@ -98,6 +98,20 @@ export default defineComponent({
       }
     };
 
+    const automateTask = async (task: Task) => {
+      try {
+        const response = await api.post("/automation/task", {
+          task_id: task.id,
+          description: task.description,
+          date: props.filters.date, 
+        });
+
+        console.log("Automation response:", response.data);
+      } catch (err) {
+        console.error("Error sending task to Make.com:", err);
+      }
+    };
+
   
     watch(
       () => props.filters,
@@ -116,6 +130,7 @@ export default defineComponent({
       deleteTask,
       toggleTask,
       formattedDate,
+      automateTask
     };
   },
 });
@@ -160,6 +175,8 @@ export default defineComponent({
       @edit-task="editTask"
       @delete-task="deleteTask"
       @toggle-task="toggleTask"
+      @automate-task="automateTask"
+
     />
   </div>
 </template>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http; 
 
 class TaskController extends Controller
 {
@@ -48,4 +49,51 @@ class TaskController extends Controller
         $task->delete();
         return response()->noContent();
     }
+
+    public function sendToMake(Request $request)
+    {
+        
+        $request->validate([
+            'task_id' => 'required|integer',
+            'description' => 'required|string',
+            'date' => 'required|string',
+        ]);
+
+
+        $payload = [
+            'task_id' => $request->task_id,
+            'description' => $request->description,
+            'date' => $request->date,
+        ];
+
+        try {
+          
+            $response = Http::withoutVerifying()->post(
+                'https://hook.us2.make.com/962jq6g872d9el1e1opl41d5r5oxc82n',
+                $payload
+            );
+
+            if ($response->successful()) {
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Task sent to Make.com',
+                    'data' => $response->body(), 
+                ]);
+            }
+
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to send task',
+                'details' => $response->body(),
+            ], 500);
+        } catch (\Exception $e) {
+            
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Exception while sending task',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 }
